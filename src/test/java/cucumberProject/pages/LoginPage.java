@@ -21,9 +21,9 @@ public class LoginPage extends BasePage {
     private By passwordInputXPath = By.xpath("//input[@id='password']");
     private By loginButtonXPath = By.xpath("//input[@id='login-button']");
 
-    public void login (String username, String password) {
+    public void loginWithValidData (String username, String password) {
         waitAndType(usernameInputXPath, username, 5);
         waitAndType(passwordInputXPath, password, 5);
-        waitAndClick(loginButtonXPath, 10);
+        waitAndClick(loginButtonXPath, 5);
     }
 }

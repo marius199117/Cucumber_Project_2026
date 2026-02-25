@@ -23,7 +23,7 @@ public class StepDefinitions extends BasePage {
     @Then("I Successfully Login With Valid Username {string} And Valid Password {string}")
     public void i_login_With_Valid_Username_And_Password(String username, String password) {
         LoginPage loginPage = new LoginPage();
-        loginPage.login(username, password);
+        loginPage.loginWithValidData(username, password);
         SoftAssert softAssert = new SoftAssert();
         String expectedURL = "https://www.saucedemo.com/inventory.html";
         String actualURL = BrowserHelper.getCurrentUrl();
