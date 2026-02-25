@@ -17,42 +17,46 @@ public class BasePage {
     /**
      * Asteapta și face click pe un element
      */
-    public void waitAndClick(String xpath, int seconds) {
+    public void waitAndClick(By element, int seconds) {
         WebDriver driver = DriverManager.getDriver();
         WebDriverWait waiter = new WebDriverWait(driver, Duration.ofSeconds(seconds));
-        waiter.until(ExpectedConditions.elementToBeClickable(By.xpath(xpath)));
-        driver.findElement(By.xpath(xpath)).click();
+        waiter.until(ExpectedConditions.elementToBeClickable(element)).click();
     }
 
     /**
      * Asteapta și introduce text într-un câmp
      */
-    public void waitAndType(String xpathForStatedTextBox, String stringToType, int seconds) {
+    /**
+     * Așteaptă ca elementul să fie clickabil și scrie text în el
+     */
+    public void waitAndType(By locator, String textToType, int seconds) {
         WebDriver driver = DriverManager.getDriver();
         WebDriverWait waiter = new WebDriverWait(driver, Duration.ofSeconds(seconds));
-        waiter.until(ExpectedConditions.elementToBeClickable(By.xpath(xpathForStatedTextBox)));
-        WebElement statedTextBox = findElementByXPath(xpathForStatedTextBox);
-        Assert.assertNotNull(statedTextBox);
-        statedTextBox.sendKeys(stringToType);
+        WebElement textBox = waiter.until(ExpectedConditions.elementToBeClickable(locator));
+        Assert.assertNotNull(textBox);
+        textBox.sendKeys(textToType);
     }
 
     /**
      * Asteapta și verifică că un element este afișat
      */
-    public boolean waitUntilElementIsDisplayed(String xpath, int seconds) {
+    public boolean waitUntilElementIsDisplayed(By xpath, int seconds) {
         WebDriver driver = DriverManager.getDriver();
         WebDriverWait waiter = new WebDriverWait(driver, Duration.ofSeconds(seconds));
-        waiter.until(ExpectedConditions.presenceOfElementLocated(By.xpath(xpath)));
-        return driver.findElement(By.xpath(xpath)).isDisplayed();
+        waiter.until(ExpectedConditions.presenceOfElementLocated(xpath));
+        return driver.findElement(xpath).isDisplayed();
     }
 
     /**
      * Găsește un element după XPath
      */
-    public WebElement findElementByXPath(String xPathToSearchFor) {
+    /**
+     * Găsește un element după locator (XPath, CSS etc.)
+     */
+    public WebElement findElement(By locator) {
         WebDriver driver = DriverManager.getDriver();
         try {
-            return driver.findElement(By.xpath(xPathToSearchFor));
+            return driver.findElement(locator);
         } catch (NoSuchElementException e) {
             return null;
         }
@@ -75,23 +79,23 @@ public class BasePage {
     /**
      * Asteapta ca un element să devină inactiv
      */
-    public void waitUntilElementIsInvisible(String xpath, int seconds) {
+    public void waitUntilElementIsInvisible(By xpath, int seconds) {
         WebDriver driver = DriverManager.getDriver();
         WebDriverWait waiter = new WebDriverWait(driver, Duration.ofSeconds(seconds));
-        waiter.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(xpath)));
+        waiter.until(ExpectedConditions.invisibilityOfElementLocated(xpath));
     }
 
     /**
      * Obține textul unui element
      */
-    public String getText(String xpath) {
-        return findElementByXPath(xpath).getText();
+    public String getText(By locator) {
+        WebElement element = findElement(locator);
+        return element != null ? element.getText() : null;
     }
-
     /**
      * Verifică dacă un element este prezent
      */
-    public boolean isElementPresent(String xpath) {
-        return findElementByXPath(xpath) != null;
+    public boolean isElementPresent(By locator) {
+        return findElement(locator) != null;
     }
 }
