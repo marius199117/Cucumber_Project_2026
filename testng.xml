@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-current.dtd">
+<suite name="Test Suite" parallel="tests" thread-count="2" verbose="2">
+
+    <test name="GenericTests" parallel="tests" thread-count="2">
+        <classes>
+            <class name="cucumberProject.runners.GenericTestRunner"/>
+        </classes>
+    </test>
+
+</suite>
+

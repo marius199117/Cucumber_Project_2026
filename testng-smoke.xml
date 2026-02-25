@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-current.dtd">
+<suite name="Smoke Test Suite" parallel="tests" thread-count="2" verbose="2">
+
+    <test name="SmokeTests" parallel="tests" thread-count="2">
+        <parameter name="cucumber.filter.tags" value="@Smoke"/>
+        <classes>
+            <class name="cucumberProject.runners.GenericTestRunner"/>
+        </classes>
+    </test>
+
+</suite>
+

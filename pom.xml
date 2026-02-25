@@ -1,0 +1,195 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cucumber.demo</groupId>
+	<artifactId>cucumber-demo_2026</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<junit.version>4.13.2</junit.version>
+		<!-- align cucumber to a newer compatible version used by cucumber-testng -->
+		<cucumber.version>7.34.2</cucumber.version>
+		<jackson.core.version>2.17.2</jackson.core.version>
+		<jackson.annotations.version>2.17.2</jackson.annotations.version>
+		<jackson.databind.version>2.17.2</jackson.databind.version>
+		<jackson.dataformat.xml.version>2.17.2</jackson.dataformat.xml.version>
+		<rest.assured.version>5.4.0</rest.assured.version>
+		<!-- synchronize selenium server version with selenium-java -->
+		<selenium.java.version>4.11.0</selenium.java.version>
+		<webdrivermanager.version>5.9.2</webdrivermanager.version>
+		<json.version>20231013</json.version>
+		<json.simple.version>1.1.1</json.simple.version>
+		<mysql.connector.java>8.0.28</mysql.connector.java>
+		<cucumber.reporting>5.8.2</cucumber.reporting>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- default suite file, can be overridden by -DGroups=smoke/regression via profiles -->
+		<suiteXmlFile>testng.xml</suiteXmlFile>
+		<!-- Allow passing cucumber tag filter from CLI via -Dcucumber.filter.tags (default empty) -->
+		<cucumber.filter.tags />
+		<!-- headless flag default -->
+		<headless>false</headless>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version>
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+					</suiteXmlFiles>
+					<parallel>tests</parallel>
+					<threadCount>2</threadCount>
+					<!-- forward CLI properties to tests (use -DBrowser=Chrome -Dcucumber.filter.tags='@Smoke' -Dheadless=false) -->
+					<systemPropertyVariables>
+						<browser>${Browser}</browser>
+						<Browser>${Browser}</Browser>
+						<cucumber.filter.tags>${cucumber.filter.tags}</cucumber.filter.tags>
+						<headless>${headless}</headless>
+					</systemPropertyVariables>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>smoke</id>
+			<activation>
+				<property>
+					<name>Groups</name>
+					<value>smoke</value>
+				</property>
+			</activation>
+			<properties>
+				<suiteXmlFile>testng-smoke.xml</suiteXmlFile>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>regression</id>
+			<activation>
+				<property>
+					<name>Groups</name>
+					<value>regression</value>
+				</property>
+			</activation>
+			<properties>
+				<suiteXmlFile>testng-regression.xml</suiteXmlFile>
+			</properties>
+		</profile>
+	</profiles>
+
+	<dependencies>
+
+		<!-- Jackson dependencies -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${jackson.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>${jackson.annotations.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.databind.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>${jackson.dataformat.xml.version}</version>
+		</dependency>
+
+		<!-- Rest Assured for API testing -->
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>${rest.assured.version}</version>
+		</dependency>
+
+		<!-- Testing dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- removed cucumber-junit to avoid JUnit/TestNG classpath conflicts when using cucumber-testng -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>7.11.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-testng</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-picocontainer</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Selenium dependencies -->
+		<!-- Use selenium-java which brings required client/server bits; avoids depending directly on selenium-server artifact which may not be present in all repos -->
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>${selenium.java.version}</version>
+		</dependency>
+
+		<!-- WebDriver Manager for Selenium -->
+		<dependency>
+			<groupId>io.github.bonigarcia</groupId>
+			<artifactId>webdrivermanager</artifactId>
+			<version>${webdrivermanager.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- JSON dependencies -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>${json.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>${json.simple.version}</version>
+		</dependency>
+
+		<!-- MySQL connector -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.connector.java}</version>
+		</dependency>
+
+		<!-- Cucumber reporting dependency -->
+		<dependency>
+			<groupId>net.masterthought</groupId>
+			<artifactId>cucumber-reporting</artifactId>
+			<version>${cucumber.reporting}</version>
+		</dependency>
+	</dependencies>
+</project>
+
