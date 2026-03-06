@@ -10,6 +10,9 @@ import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.safari.SafariDriver;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * BrowserFactory - Factory Pattern pentru crearea și configurarea WebDriver-elor
  * Suportă Chrome, Firefox, Edge, Safari
@@ -77,24 +80,27 @@ public class BrowserFactory {
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions chromeOptions = new ChromeOptions();
-        // Dezactivează extensii și accelerație GPU
+
+        // Dezactivare password manager
+        Map<String, Object> prefs = new HashMap<>();
+        prefs.put("credentials_enable_service", false);
+        prefs.put("profile.password_manager_enabled", false);
+        prefs.put("profile.password_manager_leak_detection", false);
+        chromeOptions.setExperimentalOption("prefs", prefs);
+
         chromeOptions.addArguments("--disable-extensions");
         chromeOptions.addArguments("--disable-gpu");
         chromeOptions.addArguments("--disable-dev-shm-usage");
-        chromeOptions.setAcceptInsecureCerts(true);
-
-        // Dezactivează notificări
         chromeOptions.addArguments("--disable-notifications");
-
-        // Headless mode (comandabil via -Dheadless=false)
-        if (isHeadless()) {
-            chromeOptions.addArguments("--headless");
-        }
-
-        // Alte opțiuni utile
         chromeOptions.addArguments("--no-sandbox");
         chromeOptions.addArguments("--start-maximized");
         chromeOptions.addArguments("--disable-popup-blocking");
+
+        if (isHeadless()) {
+            chromeOptions.addArguments("--headedless");
+        }
+
+        chromeOptions.setAcceptInsecureCerts(true);
 
         return new ChromeDriver(chromeOptions);
     }
