@@ -97,7 +97,7 @@ public class BrowserFactory {
         chromeOptions.addArguments("--disable-popup-blocking");
 
         if (isHeadless()) {
-            chromeOptions.addArguments("--headedless");
+            chromeOptions.addArguments("--headless");
         }
 
         chromeOptions.setAcceptInsecureCerts(true);
